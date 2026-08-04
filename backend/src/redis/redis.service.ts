@@ -33,6 +33,7 @@ export class RedisService {
   }
 
   async publish(channel: string, message: any) {
+    console.log(`Publishing to channel: ${channel}`, message);
     await this.publisher.publish(channel, JSON.stringify(message));
   }
 

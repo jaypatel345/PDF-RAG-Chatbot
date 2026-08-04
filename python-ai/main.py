@@ -24,14 +24,17 @@ async def redis_listener():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
+    print("Starting application lifespan...")
     await redis_service.connect()
     chroma_service.initialize()
     
     # Start Redis listener in background
+    print("Starting Redis listener...")
     asyncio.create_task(redis_listener())
     
     yield
     # Shutdown
+    print("Shutting down...")
     await redis_service.disconnect()
 
 app = FastAPI(

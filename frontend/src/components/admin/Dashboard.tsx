@@ -13,6 +13,7 @@ export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStatsType | null>(null);
   const [chatStats, setChatStats] = useState<ChatStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -22,10 +23,18 @@ export default function Dashboard() {
       return;
     }
     fetchData();
+    
+    // Set up polling for real-time updates
+    const interval = setInterval(() => {
+      fetchData();
+    }, 5000); // Poll every 5 seconds
+
+    return () => clearInterval(interval);
   }, [router]);
 
   const fetchData = async () => {
     try {
+      setRefreshing(true);
       const [docStats, chatData] = await Promise.all([
         documentsAPI.getDashboardStats(),
         chatAPI.getStats(),
@@ -36,6 +45,7 @@ export default function Dashboard() {
       console.error('Error fetching dashboard data:', error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -85,9 +95,14 @@ export default function Dashboard() {
       <nav className="bg-white border-b px-6 py-4">
         <div className="flex justify-between items-center max-w-7xl mx-auto">
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-          <Button onClick={handleLogout} variant="outline">
-            Logout
-          </Button>
+          <div className="flex items-center space-x-2">
+            <Button onClick={fetchData} variant="outline" size="sm" disabled={refreshing}>
+              <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+            </Button>
+            <Button onClick={handleLogout} variant="outline">
+              Logout
+            </Button>
+          </div>
         </div>
       </nav>
 
@@ -117,7 +132,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Pending</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
+              <Clock className={`h-4 w-4 text-muted-foreground ${stats?.pendingPDFs > 0 ? 'animate-pulse' : ''}`} />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats?.pendingPDFs || 0}</div>
@@ -193,7 +208,7 @@ export default function Dashboard() {
 
 function UploadSection({ onUpload }: { onUpload: () => void }) {
   const [uploading, setUploading] = useState(false);
-  const fileInputRef = (React as any).useRef<HTMLInputElement>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -203,6 +218,8 @@ function UploadSection({ onUpload }: { onUpload: () => void }) {
     try {
       await documentsAPI.upload(file);
       onUpload();
+      // Trigger a refresh after upload to update status
+      setTimeout(() => onUpload(), 2000); // Refresh again after 2 seconds to catch status changes
       // Reset the file input
       if (fileInputRef.current) {
         fileInputRef.current.value = '';

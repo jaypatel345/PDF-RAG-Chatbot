@@ -1,124 +1,51 @@
-# AI Knowledge Base Chatbot (RAG System)
+# AI Chatbot with RAG - Full Stack Application
 
-A production-ready AI-powered knowledge base chatbot using microservice architecture with Redis Pub/Sub communication. Built for a full-stack developer assignment demonstrating microservices, RAG (Retrieval-Augmented Generation), and modern web development practices.
+A modern AI-powered chatbot application that allows users to upload PDF documents and ask questions about their content using Retrieval-Augmented Generation (RAG). Built with Next.js, NestJS, Python/FastAPI, LangChain, LangGraph, and Redis.
 
-## 🏗️ Architecture
+## 🚀 Features
 
-```
-Next.js Frontend
-        │
-        ▼
-Node.js Backend (TypeScript)
-        │
- Redis Pub/Sub
-        │
-        ▼
-Python AI Service
-(LangChain + LangGraph)
-        │
-        ▼
-Vector Database (ChromaDB)
-        │
-        ▼
-Database (PostgreSQL)
-```
+- **PDF Upload & Processing**: Upload multiple PDFs with automatic text extraction and indexing
+- **AI-Powered Chat**: Ask questions about uploaded documents with context-aware responses
+- **Real-time Status Updates**: Live document processing status without page refresh
+- **Follow-up Questions**: Maintain conversation context for better accuracy
+- **Suggested Questions**: AI generates relevant follow-up questions
+- **Source Attribution**: Answers include source document and page number
+- **Multi-Document Support**: Query across multiple uploaded PDFs simultaneously
+- **Admin Dashboard**: Manage documents, view statistics, and monitor processing
 
-## 🚀 Tech Stack
+## �️ Tech Stack
 
 ### Frontend
-- **Next.js 14** (App Router)
-- **TypeScript**
-- **Tailwind CSS**
-- **SHADCN UI**
-- **React Markdown**
-- **Axios**
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Components**: shadcn/ui
+- **State Management**: React Hooks
 
 ### Backend
-- **Node.js**
-- **NestJS**
-- **TypeScript**
-- **TypeORM**
-- **PostgreSQL**
-- **Redis Pub/Sub**
-- **JWT Authentication**
+- **Framework**: NestJS
+- **Language**: TypeScript
+- **Database**: SQLite (TypeORM)
+- **Cache**: Redis
+- **Authentication**: JWT (Passport.js)
 
 ### AI Service
-- **Python 3.10+**
-- **FastAPI**
-- **LangChain**
-- **LangGraph**
-- **ChromaDB** (Vector Database)
-- **Groq API** (Fast, free LLM - Llama 3)
-- **HuggingFace Embeddings** (Free, local embeddings)
-
-## ✨ Features
-
-### Admin Panel
-- 🔐 Secure JWT authentication
-- 📊 Dashboard with real-time analytics
-- 📄 PDF upload and management
-- 🔄 Document processing status tracking
-- 🔍 Search and filter documents
-- 🗑️ Delete and reprocess documents
-
-### Public Chat Interface
-- 💬 ChatGPT-style interface
-- ⚡ Streaming responses
-- 📝 Markdown rendering
-- 📚 Source citation with page numbers
-- 💡 Suggested follow-up questions
-- 🧠 Conversation memory
-- 📱 Responsive design
-
-## 📁 Project Structure
-
-```
-AI-Chatbot/
-├── frontend/              # Next.js frontend application
-│   ├── src/
-│   │   ├── app/          # Next.js App Router pages
-│   │   ├── components/   # React components
-│   │   ├── lib/          # Utilities and API client
-│   │   └── types/        # TypeScript types
-│   ├── package.json
-│   └── tsconfig.json
-├── backend/              # NestJS backend API
-│   ├── src/
-│   │   ├── auth/         # Authentication module
-│   │   ├── documents/    # Document management
-│   │   ├── chat/         # Chat module
-│   │   ├── redis/        # Redis Pub/Sub service
-│   │   ├── database/     # Database entities and migrations
-│   │   └── config/       # Configuration
-│   ├── package.json
-│   └── tsconfig.json
-├── python-ai/            # Python AI service
-│   ├── app/
-│   │   ├── routers/      # FastAPI routers
-│   │   ├── services/     # Business logic
-│   │   ├── graph/        # LangGraph workflows
-│   │   └── models/       # Pydantic models
-│   ├── requirements.txt
-│   └── main.py
-├── shared/               # Shared types and utilities
-├── docker-compose.yml    # Docker services
-├── docker-compose.dev.yml
-├── .env                  # Environment variables
-├── README.md            # This file
-├── ARCHITECTURE.md      # Detailed architecture documentation
-└── API_DOCUMENTATION.md # API reference
-```
+- **Framework**: FastAPI
+- **Language**: Python 3.13
+- **RAG**: LangChain
+- **Workflow**: LangGraph
+- **Vector DB**: ChromaDB
+- **LLM**: Groq API (Llama 3 8B)
+- **Embeddings**: HuggingFace (all-MiniLM-L6-v2)
 
 ## 📋 Prerequisites
 
-- **Node.js** 18+
-- **Python** 3.10+
-- **Docker** and **Docker Compose**
-- **PostgreSQL** (via Docker)
-- **Redis** (via Docker)
-- **Groq API Key** (Free, get from https://console.groq.com/)
+- Node.js 18+
+- Python 3.13+
+- Redis server
+- Groq API key
 
-## 🛠️ Setup Instructions
+## 🏗️ Installation
 
 ### 1. Clone the Repository
 
@@ -127,233 +54,305 @@ git clone <repository-url>
 cd AI-Chatbot
 ```
 
-### 2. Environment Setup
-
-Copy the example environment file and configure it:
+### 2. Backend Setup
 
 ```bash
+cd backend
+npm install
 cp .env.example .env
 ```
 
-Edit `.env` and add your Groq API key:
-
+Update `.env` with your configuration:
 ```env
-GROQ_API_KEY=your-groq-api-key-here
+DATABASE_URL=sqlite:./database.sqlite
+JWT_SECRET=your_jwt_secret_here
+REDIS_HOST=localhost
+REDIS_PORT=6380
 ```
 
-### 3. Start Infrastructure Services
-
-Start PostgreSQL, Redis, and ChromaDB using Docker Compose:
-
+Start the backend:
 ```bash
-docker-compose up -d
-```
-
-Verify services are running:
-
-```bash
-docker-compose ps
-```
-
-### 4. Install Dependencies
-
-#### Backend
-```bash
-cd backend
-npm install
-```
-
-#### Frontend
-```bash
-cd frontend
-npm install
-```
-
-#### Python AI Service
-```bash
-cd python-ai
-pip install -r requirements.txt
-```
-
-### 5. Database Setup
-
-Create and seed the database:
-
-```bash
-cd backend
-npm run migration:run
-npm run seed
-```
-
-### 6. Start Services
-
-Open three separate terminals:
-
-#### Terminal 1 - Backend
-```bash
-cd backend
 npm run start:dev
 ```
 
-#### Terminal 2 - Python AI Service
-```bash
-cd python-ai
-uvicorn main:app --reload --port 8001
-```
+Backend runs on `http://localhost:3001`
 
-#### Terminal 3 - Frontend
+### 3. Frontend Setup
+
 ```bash
 cd frontend
+npm install
+cp .env.local.example .env.local
+```
+
+Update `.env.local`:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
+
+Start the frontend:
+```bash
 npm run dev
 ```
 
-### 7. Access the Application
+Frontend runs on `http://localhost:3000`
+
+### 4. Python AI Service Setup
+
+```bash
+cd python-ai
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+Set environment variables:
+```bash
+export GROQ_API_KEY=your_groq_api_key
+export REDIS_HOST=localhost
+export REDIS_PORT=6380
+export BACKEND_URL=http://localhost:3001
+```
+
+Start the Python service:
+```bash
+python -m uvicorn main:app --reload --port 8001
+```
+
+Python service runs on `http://localhost:8001`
+
+### 5. Redis Setup
+
+Start Redis on port 6380:
+```bash
+redis-server --port 6380
+```
+
+## 🎯 Usage
+
+### 1. Access the Application
 
 - **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:3001
-- **AI Service**: http://localhost:8001
-- **Admin Panel**: http://localhost:3000/admin
+- **Admin Dashboard**: http://localhost:3000/admin/dashboard
 - **Chat Interface**: http://localhost:3000/chat
 
-## 🔑 Default Admin Credentials
+### 2. Admin Login
 
-- **Email**: `admin@example.com`
-- **Password**: `admin123`
+Default credentials:
+- **Email**: admin@example.com
+- **Password**: admin123
 
-## 📚 Documentation
+### 3. Upload PDFs
 
-- **[Architecture Documentation](ARCHITECTURE.md)** - Detailed system architecture, data flow, and component details
-- **[API Documentation](API_DOCUMENTATION.md)** - Complete API reference with examples
-- **[Groq Migration Guide](GROQ_MIGRATION.md)** - Information about using Groq API instead of OpenAI
+1. Navigate to Admin Dashboard
+2. Click "Select PDF" button
+3. Choose a PDF file
+4. Watch the processing status update in real-time
 
-## 🎯 Usage Guide
+### 4. Chat with Documents
 
-### Uploading PDFs (Admin)
+1. Navigate to Chat Interface
+2. Ask questions about uploaded documents
+3. View AI responses with source attribution
+4. Use suggested follow-up questions
 
-1. Navigate to http://localhost:3000/admin
-2. Login with admin credentials
-3. Go to Dashboard
-4. Click "Select PDF" to upload a document
-5. Wait for processing to complete
-6. View document status in the recent documents list
+## 📁 Project Structure
 
-### Chatting with AI (Public)
+```
+AI-Chatbot/
+├── frontend/              # Next.js Frontend
+│   ├── src/
+│   │   ├── app/          # Pages
+│   │   ├── components/   # React components
+│   │   ├── lib/          # Utilities & API
+│   │   └── types/        # TypeScript types
+│   └── package.json
+├── backend/              # NestJS Backend
+│   ├── src/
+│   │   ├── auth/         # Authentication
+│   │   ├── chat/         # Chat module
+│   │   ├── documents/    # Document management
+│   │   └── redis/        # Redis service
+│   ├── uploads/          # File storage
+│   └── package.json
+├── python-ai/            # Python AI Service
+│   ├── app/
+│   │   ├── routers/      # FastAPI routes
+│   │   ├── services/     # Business logic
+│   │   ├── graph/        # LangGraph workflow
+│   │   └── models/       # Pydantic models
+│   ├── main.py
+│   ├── requirements.txt
+│   └── chroma_db/        # Vector database
+└── README.md
+```
 
-1. Navigate to http://localhost:3000/chat
-2. Type your question in the input field
-3. Press Enter or click Send
-4. View the AI response with source citations
-5. Click suggested questions for follow-up queries
+## 🔧 API Documentation
 
-## 🔧 Development
+### Backend API (Port 3001)
 
-### Running Tests
+#### Authentication
+```http
+POST /auth/login
+Content-Type: application/json
 
-#### Backend
+{
+  "email": "admin@example.com",
+  "password": "admin123"
+}
+```
+
+#### Documents
+```http
+# Upload PDF
+POST /documents/upload
+Authorization: Bearer {token}
+Content-Type: multipart/form-data
+
+# Get all documents
+GET /documents
+Authorization: Bearer {token}
+
+# Get dashboard stats
+GET /documents/dashboard
+Authorization: Bearer {token}
+
+# Delete document
+DELETE /documents/:id
+Authorization: Bearer {token}
+```
+
+#### Chat
+```http
+# Ask question
+POST /chat/ask
+Content-Type: application/json
+
+{
+  "question": "What is the main topic?",
+  "sessionId": "session_123"
+}
+
+# Get chat history
+GET /chat/history/:sessionId
+```
+
+### Python AI Service (Port 8001)
+
+#### Health Check
+```http
+GET /health
+```
+
+## 🏗️ Architecture
+
+The application uses a three-tier architecture:
+
+1. **Frontend**: Next.js for user interface
+2. **Backend**: NestJS for API and business logic
+3. **AI Service**: FastAPI for AI processing
+
+**Communication**:
+- Frontend ↔ Backend: HTTP/REST
+- Backend ↔ AI Service: Redis Pub/Sub
+- AI Service ↔ Backend: HTTP callbacks
+
+**Data Storage**:
+- SQLite: Document metadata, chat history
+- ChromaDB: Vector embeddings for semantic search
+- Redis: Message broker and caching
+
+## 🔐 Security
+
+- JWT authentication for admin access
+- Environment variable protection
+- File upload validation
+- SQL injection prevention (TypeORM)
+- XSS protection (React built-in)
+
+## 🧪 Testing
+
 ```bash
+# Backend tests
 cd backend
-npm run test
-```
+npm test
 
-#### Frontend
-```bash
+# Frontend tests
 cd frontend
-npm run test
-```
+npm test
 
-#### Python AI Service
-```bash
+# Python tests
 cd python-ai
 pytest
 ```
 
-### Code Quality
+## 📊 Environment Variables
 
-#### Backend
-```bash
-cd backend
-npm run lint
-npm run format
+### Backend (.env)
+```env
+DATABASE_URL=sqlite:./database.sqlite
+JWT_SECRET=your_jwt_secret
+REDIS_HOST=localhost
+REDIS_PORT=6380
 ```
 
-#### Frontend
-```bash
-cd frontend
-npm run lint
+### Frontend (.env.local)
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
-## 🐳 Docker Deployment
-
-### Development Mode
-```bash
-docker-compose -f docker-compose.dev.yml up -d
+### Python AI Service
+```env
+GROQ_API_KEY=your_groq_api_key
+REDIS_HOST=localhost
+REDIS_PORT=6380
+BACKEND_URL=http://localhost:3001
 ```
 
-### Production Mode
-Create a `docker-compose.prod.yml` with production configurations and run:
+## � Deployment
+
+### Docker Deployment (Recommended)
 
 ```bash
-docker-compose -f docker-compose.prod.yml up -d
+# Build and start all services
+docker-compose up -d
 ```
 
-## 🔍 Troubleshooting
+### Manual Deployment
 
-### ChromaDB Connection Issues
-- Ensure ChromaDB is running: `docker-compose ps`
-- Check ChromaDB logs: `docker-compose logs chromadb`
-- Verify port 8000 is not in use
-
-### Redis Connection Issues
-- Verify Redis is running: `redis-cli ping`
-- Check Redis logs: `docker-compose logs redis`
-- Ensure port 6379 is accessible
-
-### Database Migration Issues
-- Reset database: `npm run migration:rollback && npm run migration:run`
-- Re-seed data: `npm run seed`
-- Check PostgreSQL logs: `docker-compose logs postgres`
-
-### PDF Processing Issues
-- Check Python AI service logs for errors
-- Verify OpenAI API key is valid
-- Ensure PDF file is not corrupted
-- Check Redis connection between services
-
-### Chat Not Working
-- Verify all services are running
-- Check Redis Pub/Sub communication
-- Ensure ChromaDB has indexed documents
-- Check AI service logs for LangGraph errors
-
-## 🏆 Evaluation Criteria
-
-This project addresses the following evaluation criteria:
-
-- ✅ **Next.js Frontend (15 marks)** - Complete admin panel and chat interface
-- ✅ **Node.js Backend (15 marks)** - NestJS with TypeScript, authentication, APIs
-- ✅ **Python AI Service (20 marks)** - FastAPI with LangChain and LangGraph
-- ✅ **LangChain Implementation (15 marks)** - Document processing and embeddings
-- ✅ **LangGraph Implementation (15 marks)** - RAG workflow with state management
-- ✅ **Redis Pub/Sub Integration (10 marks)** - Async communication between services
-- ✅ **Database & Vector DB Design (5 marks)** - PostgreSQL + ChromaDB
-- ✅ **Code Quality & Folder Structure (5 marks)** - Clean architecture
-
-## 📝 License
-
-MIT License - feel free to use this project for learning and development.
+1. Deploy backend to hosting service (Vercel, AWS, etc.)
+2. Deploy frontend to hosting service (Vercel, Netlify, etc.)
+3. Deploy Python service to hosting service (Render, Railway, etc.)
+4. Set up managed Redis (Redis Cloud, AWS ElastiCache)
+5. Configure environment variables
+6. Update API URLs in frontend
 
 ## 🤝 Contributing
 
-This is an assignment project, but improvements and suggestions are welcome!
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
 
-## 📞 Support
+## 📝 License
 
-For issues or questions:
-1. Check the [Architecture Documentation](ARCHITECTURE.md)
-2. Review the [API Documentation](API_DOCUMENTATION.md)
-3. Look at the troubleshooting section above
-4. Check service logs for detailed error messages
+This project is licensed under the MIT License.
 
----
+## 🙏 Acknowledgments
 
-**Built with ❤️ for the AI Full Stack Developer Assignment**
+- LangChain for the RAG framework
+- LangGraph for workflow orchestration
+- Groq for fast LLM inference
+- ChromaDB for vector storage
+- shadcn/ui for beautiful components
+
+## � Contact
+
+For questions or support, please open an issue on GitHub.
+
+## 📚 Additional Documentation
+
+- [Project Documentation](./PROJECT_DOCUMENTATION.md) - Comprehensive technical details
+- [Architecture Diagram](./ARCHITECTURE.md) - System architecture and data flow
+- [Database Schema](./DATABASE_SCHEMA.md) - Database structure and relationships
